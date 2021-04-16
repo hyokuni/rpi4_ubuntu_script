@@ -35,7 +35,7 @@ def adaptiveFanCtrl(enable,period,temp):
     time.sleep(period)
 
 GETTEMP = 'cat /sys/devices/virtual/thermal/thermal_zone0/temp'
-PWM_PERIOD = 1000
+PWM_PERIOD = 100
 CTRL_PERIOD = 1
 TURN_ON = True
 TURN_OFF = False

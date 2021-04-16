@@ -1,0 +1,13 @@
+https://hyess.tistory.com/255
+
+chkconfig 대체 프로그램
+update-rc.d <service> defaults
+update-rc.d <service> start 20 3 4 5
+
+update-rc.d 사용법
+https://www.debuntu.org/how-to-managing-services-with-update-rc-d/
+
+우선순위를 지정하여 서비스 등록 > 동작하지 않음
+update-rc.d <service> defaults 99
+
+수정 후 /etc/rc0.d/ ~ /etc/rc6.d/에서 K,S 뒤 번호를 수정하여 조정 함

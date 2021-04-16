@@ -1,9 +1,4 @@
 #! /usr/bin/python3
-#usage power off control.
-#torex ic need to press long push for power off
-#it is different time each ic
-#do fix a parameter ISR_PERIOD. It decide hold the transistor turn on
-
 import RPi.GPIO as GPIO
 import time
 import subprocess
@@ -26,9 +21,15 @@ GPIO.output(btn_pin,GPIO.HIGH)
 print('signal out:high,and sleep')
 time.sleep(ISR_PERIOD)
 
+GPIO.output(btn_pin,GPIO.LOW)
+print('program end')
+
 #GPIO.output(btn_pin,GPIO.LOW)
-#print('program end')
+#print('pulse low')
+
+#subprocess_open(ORDERCMD)
+
 
 #deinit GPIㅒ
-#GPIO.cleanup()
+GPIO.cleanup()
 

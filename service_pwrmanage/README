@@ -1,0 +1,6 @@
+<서비스>
+1. 파일을 /etc/init.d/로 이동
+2. chmod +x <파일명>으로 실행권한 주기, chmod 755 <>
+3. sudo update-rc.d <서비스> defaults
+4. 실행에 따라서 숫자로 우선순위 변경해주기 /etc/rc0.d/~rc6.d
+
