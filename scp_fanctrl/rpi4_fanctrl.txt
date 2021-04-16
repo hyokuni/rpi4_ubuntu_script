@@ -1,0 +1,110 @@
+[rd.local 등록]
+
+cd etc
+vi rc.local
+------
+#! /bin/sh
+
+# 내부에 while 반복문을 작성하면 부팅 먹통이 발생하여 복구 불가함
+
+exit 0
+-------
+
+chmod +x /etc/rc.local
+
+ls rc.local로 확인 -rwxr-xr-x
+
+* rc-local.service 수정
+
+vi /lib/systemd/system/rc-local.service
+-> 가장 하단에 다음 문장 추가
+-----------------------------
+[Install]
+WantedBy=multi-user.target
+-----------------------------
+
+systemctl enable rc-local.service
+systemctl start rc-local.service
+systemctl status rc-local.service
+-> 결과에서 Active가 나와야 함
+
+
+fan control 프로그램 제작
+depandency 설치
+Rpi.GPIO, python3 설치
+
+
+#! /usr/bin/python3
+import Rpi.GPIO as GPIO
+import time
+import subprocess
+
+def subprocess_open(command):
+    popen = subprocess.Popen(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True)
+    (stdoutdata, stderrdata) = popen.communicate()
+    return stdoutdata, stderrdata
+
+
+def adaptiveFanCtrl(enable,period,temp):
+    
+    
+    if enable:
+        if temp > 80:
+            pwm_led.ChangeDutyCycle(90)
+            print('duty:90')
+        elif 80 >= temp:
+            pwm_led.ChangeDutyCycle(70)
+            print('duty:70')
+        elif 60 >= temp:
+            pwm_led.ChangeDutyCycle(50)
+            print('duty:50')
+        elif 50 >= temp:
+            pwm_led.ChangeDutyCycle(30)
+            print('duty:30')
+        else:
+            pwm_led.ChangeDutyCycle(0)
+            print('duty:0')
+        
+    else:
+        pwm_led.ChangeDutyCycle(0)
+        
+    time.sleep(period)
+
+GETTEMP = 'cat /sys/device~~'
+PERIOD = 1000
+TURN_ON = True
+TURN_OFF = False
+
+led_pin = 18
+GPIO.setmode(GPIO.BCM)
+GPIO.setup(led_pin, GPIO.OUT)
+pwm_led = GPIO.PWM(led_pin, PERIOD)
+
+#start value zero
+pwm_led.start(0)
+#pwm_led.start(100)
+time.sleep(1)
+
+tempNow = ''
+err = ''
+getdata = ''
+
+Try:
+	while True:
+        #get temp
+        tempNow,err = subprocess_open(GETTEMP)
+        tempNow = int(tempNow[:-1])
+        
+        print('cpu temp is ',str(tempNow))
+        
+        #test
+        #getdata = input()
+        #adaptiveFanCtrl(TURN_ON,PERIOD,int(getdata))
+        
+        adaptiveFanCtrl(TURN_ON,PERIOD,tempNow)
+        
+
+Finally:
+    pwm_led.stop()
+	GPIO.cleanup()
+
